@@ -10,6 +10,7 @@
 
 const todosController = require('../controllers').todos;
 const usersController = require('../controllers').users;
+const productController = require('../controllers').products;
 
 module.exports = (app) => {
   app.get('/api', (req, res) => res.status(200).send({
@@ -23,4 +24,7 @@ module.exports = (app) => {
   app.post('/api/upload/:category', usersController.upload);
   app.get('/api/images/:category/:file', usersController.showImage);
   app.post('/api/users/update', usersController.updateInfo);
+  // Product
+  app.post('/api/product/create', productController.create);
+
 }
