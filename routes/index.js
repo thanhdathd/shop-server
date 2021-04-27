@@ -11,6 +11,7 @@
 const todosController = require('../controllers').todos;
 const usersController = require('../controllers').users;
 const productController = require('../controllers').products;
+const categoryController = require('../controllers').categories;
 
 module.exports = (app) => {
   app.get('/api', (req, res) => res.status(200).send({
@@ -26,5 +27,7 @@ module.exports = (app) => {
   app.post('/api/users/update', usersController.updateInfo);
   // Product
   app.post('/api/product/create', productController.create);
-
+  app.get('/api/product/list', productController.list);
+  app.post('/api/category/create', categoryController.create);
+  app.get('/api/category/list', categoryController.list);
 }
