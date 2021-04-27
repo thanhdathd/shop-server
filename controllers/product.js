@@ -76,4 +76,45 @@ module.exports = {
             })
             .catch(error => res.status(400).send(error));
     },
+
+    update(req, res) {
+        const {name, categoryId, imageLink, options, id} = req.body;
+        Product.update({
+            name: name,
+            categoryId: categoryId,
+            image: imageLink,
+            options: options,
+        }, {
+            where: {id: id}
+        }).then(count => {
+            Product.findByPk(id)
+            .then( pro => {
+                pro.options = JSON.parse(pro.options);
+                res.status(200).send({
+                    message: 'Update success',
+                    affectedRows: count,
+                    product: pro,
+                });
+            })
+        })
+        .catch(err => res.status(400).send(err))
+    },
+
+    delete(req, res){
+        Product.destroy({
+            where: {
+                id: req.body.id
+            }
+        })
+        .then(af => {
+            res.status(200).send({
+                message: 'Successfully',
+                affectedRows: af,
+            })
+        })
+        .catch(err => res.status(400).send({
+            message: 'Failed',
+            err: err,
+        }))
+    },
 };

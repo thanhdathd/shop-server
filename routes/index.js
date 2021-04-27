@@ -12,6 +12,7 @@ const todosController = require('../controllers').todos;
 const usersController = require('../controllers').users;
 const productController = require('../controllers').products;
 const categoryController = require('../controllers').categories;
+const materialCatController = require('../controllers').materialcats;
 
 module.exports = (app) => {
   app.get('/api', (req, res) => res.status(200).send({
@@ -28,6 +29,20 @@ module.exports = (app) => {
   // Product
   app.post('/api/product/create', productController.create);
   app.get('/api/product/list', productController.list);
+  app.post('/api/product/update', productController.update);
+  app.post('/api/product/delete', productController.delete);
+
+  // Product category
   app.post('/api/category/create', categoryController.create);
   app.get('/api/category/list', categoryController.list);
+  app.post('/api/category/delete', categoryController.delete);
+
+  // materialcat
+  app.post('/api/materialcat/create', materialCatController.create);
+  app.get('/api/materialcat/list', materialCatController.list);
+  app.post('/api/materialcat/update', materialCatController.update);
+  app.post('/api/materialcat/delete', materialCatController.delete);
+
+  // Material
+
 }
