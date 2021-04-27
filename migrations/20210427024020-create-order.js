@@ -18,7 +18,7 @@ module.exports = {
         type: Sequelize.STRING
       },
       listProduct: {
-        type: Sequelize.JSON
+        type: Sequelize.TEXT
       },
       note: {
         type: Sequelize.STRING

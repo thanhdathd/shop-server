@@ -3,6 +3,8 @@ const users = require('./user');
 const products = require('./product');
 const categories = require('./category');
 const materialcats = require('./materialcat');
+const materials = require('./material');
+const orders = require('./order');
 
 module.exports = {
     todos,
@@ -10,4 +12,6 @@ module.exports = {
     products,
     categories,
     materialcats,
+    materials,
+    orders,
 }

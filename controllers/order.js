@@ -1,8 +1,9 @@
-const Material = require('../models').Material;
+const Order = require('../models').Order;
 const Sequelize = require('sequelize');
 const Op = Sequelize.Op;
 const fs = require('fs');
 const Utils = require('./Utils.js');
+
 
 const getPagination = (page, size) => {
     const limit = size ? +size : 3;
@@ -15,6 +16,9 @@ const getPagingData = (data, page, limit) => {
     const { count: totalItems, rows: items } = data;
     const currentPage = page ? +page : 0;
     const totalPages = Math.ceil(totalItems / limit);
+    items.forEach(d => {
+        d.listProduct = JSON.parse(d.listProduct);
+    });
     return { totalItems, items: items, totalPages, currentPage };
 }
 
@@ -23,29 +27,31 @@ const getPagingData = (data, page, limit) => {
 
 module.exports = {
     create(req, res) {
-        Material
-            .create({
-                catId: req.body.catId,
-                name: req.body.name,
-                unit: req.body.unit,
-                quantity: req.body.quantity,
+        const {name, staffName, staffPhone, listProduct, note} = req.body;
+        Order
+        .create({
+            name: name,
+            staffName: staffName,
+            staffPhone: staffPhone,
+            listProduct: listProduct,
+            note: note,
+        })
+        .then(cat => {
+            res.status(200).send({
+                message: 'Successfully create Order',
+                category: cat
             })
-            .then(mater => {
-                res.status(200).send({
-                    message: 'Creat Material successfull',
-                    material: mater,
-                })
-            }).catch(err => {
-                res.status(400).send({err});
-            });
+        })
+        .catch(err => res.status(400).send({
+            message: 'Failed',
+            err: err
+        }));
     },
 
     list(req, res) {
         const { page, size } = req.query;
         const { limit, offset } = getPagination(page, size);
-
-        console.log("req.params: "+req.query.page)
-        return Material
+        return Order
             .findAndCountAll({limit, offset})
             .then(data => {
                 const response = getPagingData(data, page, limit)
@@ -54,22 +60,23 @@ module.exports = {
             .catch(error => res.status(400).send(error));
     },
 
-    update(req, res) {
-        const {name, catId, unit, quantity, id} = req.body;
-        Material.update({
+
+    update(req, res){
+        const {name, listProduct, note, id} = req.body;
+        Order.update({
             name: name,
-            catId: catId,
-            unit: unit,
-            quantity: quantity,
+            listProduct: listProduct,
+            note: note,
         }, {
             where: {id: id}
         }).then(count => {
-            Material.findByPk(id)
-            .then( m => {
+            Order.findByPk(id)
+            .then( od => {
+                od.listProduct = JSON.parse(od.listProduct);
                 res.status(200).send({
                     message: 'Update success',
                     affectedRows: count,
-                    material: m,
+                    product: od,
                 });
             })
         })
@@ -77,7 +84,7 @@ module.exports = {
     },
 
     delete(req, res){
-        Material.destroy({
+        Order.destroy({
             where: {
                 id: req.body.id
             }
@@ -92,6 +99,5 @@ module.exports = {
             message: 'Failed',
             err: err,
         }))
-    },
-
+    }
 }
