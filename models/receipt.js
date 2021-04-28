@@ -11,7 +11,13 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // Receipt belong to Order
-      Receipt.belongsTo(models.Order, {foreignKey: 'orderId'});
+      //Receipt.belongsTo(models.Order, {foreignKey: 'orderId'});
+      Receipt.belongsToMany(models.Order,{
+        through: 'ReceiptOrders',
+        as: 'orders',
+        foreignKey: 'receiptId',
+        otherKey: 'orderId'
+      });
     }
   };
   Receipt.init({

@@ -17,14 +17,15 @@ const getPagingData = (data, page, limit) => {
     const currentPage = page ? +page : 0;
     const totalPages = Math.ceil(totalItems / limit);
     
-    try{
         items.forEach(order => {
-            order.listProduct = JSON.parse(order.listProduct);
+            try{
+                order.listProduct = JSON.parse(order.listProduct);
+            }catch(err){
+                console.log('parse err:'+err)
+            }
         });
         return { totalItems, items: items, totalPages, currentPage };
-    }catch(err){
-        return { totalItems, items: items, totalPages, currentPage };
-    }
+    
 }
 
 

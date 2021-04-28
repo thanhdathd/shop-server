@@ -11,6 +11,12 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
+      Order.belongsToMany(models.Receipt,{
+        through: 'ReceiptOrders',
+        as: 'receipts',
+        foreignKey: 'orderId',
+        otherKey: 'receiptId'
+      });
     }
   };
   Order.init({
