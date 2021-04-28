@@ -17,7 +17,7 @@ module.exports = (sequelize, DataTypes) => {
   Receipt.init({
     staffName: DataTypes.STRING,
     staffPhone: DataTypes.STRING,
-    listProduct: DataTypes.JSON,
+    listProduct: DataTypes.TEXT,
     additionalFee: DataTypes.DOUBLE,
     discount: DataTypes.DOUBLE,
     totalAmount: DataTypes.DOUBLE,
