@@ -5,6 +5,7 @@ const categories = require('./category');
 const materialcats = require('./materialcat');
 const materials = require('./material');
 const orders = require('./order');
+const receipts = require('./receipt');
 
 module.exports = {
     todos,
@@ -14,4 +15,5 @@ module.exports = {
     materialcats,
     materials,
     orders,
+    receipts,
 }

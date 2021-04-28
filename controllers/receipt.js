@@ -1,8 +1,9 @@
-const Order = require('../models').Order;
+const Receipt = require('../models').Receipt;
 const Sequelize = require('sequelize');
 const Op = Sequelize.Op;
 const fs = require('fs');
 const Utils = require('./Utils.js');
+
 
 
 const getPagination = (page, size) => {
@@ -16,15 +17,10 @@ const getPagingData = (data, page, limit) => {
     const { count: totalItems, rows: items } = data;
     const currentPage = page ? +page : 0;
     const totalPages = Math.ceil(totalItems / limit);
-    
-    try{
-        items.forEach(order => {
-            order.listProduct = JSON.parse(order.listProduct);
-        });
-        return { totalItems, items: items, totalPages, currentPage };
-    }catch(err){
-        return { totalItems, items: items, totalPages, currentPage };
-    }
+    items.forEach(d => {
+        d.listProduct = JSON.parse(d.listProduct);
+    });
+    return { totalItems, items: items, totalPages, currentPage };
 }
 
 
@@ -32,19 +28,25 @@ const getPagingData = (data, page, limit) => {
 
 module.exports = {
     create(req, res) {
-        const {name, staffName, staffPhone, listProduct, note} = req.body;
-        Order
+        const {staffName, staffPhone, listProduct,
+             additionalFee, discount, totalAmount,cash, change,
+            orderId} = req.body;
+        Receipt
         .create({
-            name: name,
+            orderId: orderId,
             staffName: staffName,
             staffPhone: staffPhone,
             listProduct: listProduct,
-            note: note,
+            additionalFee: additionalFee,
+            discount: discount,
+            totalAmount: totalAmount,
+            cash: cash,
+            change: change,
         })
-        .then(od => {
+        .then(rec => {
             res.status(200).send({
                 message: 'Successfully create Order',
-                order: od
+                receipt: rec
             })
         })
         .catch(err => res.status(400).send({
@@ -56,7 +58,7 @@ module.exports = {
     list(req, res) {
         const { page, size } = req.query;
         const { limit, offset } = getPagination(page, size);
-        return Order
+        return Receipt
             .findAndCountAll({limit, offset})
             .then(data => {
                 const response = getPagingData(data, page, limit)
@@ -67,21 +69,24 @@ module.exports = {
 
 
     update(req, res){
-        const {name, listProduct, note, id} = req.body;
-        Order.update({
-            name: name,
+        const {listProduct, totalAmount, additionalFee, discount, cash, change, id} = req.body;
+        Receipt.update({
             listProduct: listProduct,
-            note: note,
+            totalAmount: totalAmount,
+            additionalFee: additionalFee,
+            discount: discount,
+            cash: cash,
+            change: change,
         }, {
             where: {id: id}
         }).then(count => {
-            Order.findByPk(id)
-            .then( od => {
-                od.listProduct = JSON.parse(od.listProduct);
+            Receipt.findByPk(id)
+            .then( r => {
+                r.listProduct = JSON.parse(r.listProduct);
                 res.status(200).send({
                     message: 'Update success',
                     affectedRows: count,
-                    order: od,
+                    receipt: r,
                 });
             })
         })
@@ -89,7 +94,7 @@ module.exports = {
     },
 
     delete(req, res){
-        Order.destroy({
+        Receipt.destroy({
             where: {
                 id: req.body.id
             }
