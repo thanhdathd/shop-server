@@ -49,8 +49,8 @@ module.exports = {
                     const data = {message: 'Failed: Tai khoan chua duoc kich hoat', user: null}
                     res.status(400).send(data)
                 }else{
-                    const data = {message: 'Succsessfull', user: user[0]}
-                    res.status(200).send(data)
+                    //const data = {message: 'Succsessfull', user: user[0]}
+                    res.status(200).send(user[0])
                 }
             }else{
                 const data = {message: 'Failed: email or password incorrect', user: null}
