@@ -1,19 +1,19 @@
-const Category = require('../models').Category;
+const MaterialCat = require('../models').MaterialCat;
 const Sequelize = require('sequelize');
 const Op = Sequelize.Op;
 const fs = require('fs');
 const Utils = require('./Utils.js');
 
 module.exports = {
-    create(req, res) {
-        Category
+    create(req, res){
+        MaterialCat
         .create({
             name: req.body.name,
         })
         .then(cat => {
             res.status(200).send({
                 message: 'Successfully create category',
-                category: cat
+                materialCat: cat
             })
         })
         .catch(err => res.status(400).send({
@@ -23,12 +23,12 @@ module.exports = {
     },
 
     list(req, res) {
-        Category
+        MaterialCat
         .findAll()
         .then(data => {
             res.status(200).send({
                 message: 'Successfully',
-                categories: data
+                materialCat: data
             });
         })
         .catch(err => {
@@ -39,8 +39,34 @@ module.exports = {
         });
     },
 
+    update(req, res){
+        const {name, id} = req.body;
+        MaterialCat
+        .update({
+            name: name
+            },
+            { where: {id: id}}
+        )
+        .then( count => {
+            MaterialCat.findByPk(id)
+            .then( row => {
+                res.status(200).send({
+                    message: 'Update success',
+                    affectedRows: count,
+                    product: row,
+                });
+            })
+        })
+        .catch(error => {
+            res.status(400).send({
+                message: 'Failed',
+                err: error,
+            })
+        })
+    },
+
     delete(req, res){
-        Category.destroy({
+        MaterialCat.destroy({
             where: {
                 id: req.body.id
             }
