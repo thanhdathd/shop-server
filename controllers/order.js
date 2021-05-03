@@ -68,11 +68,12 @@ module.exports = {
 
 
     update(req, res){
-        const {name, listProduct, note, id} = req.body;
+        const {name, listProduct, note, status, id} = req.body;
         Order.update({
             name: name,
             listProduct: listProduct,
             note: note,
+            status: status,
         }, {
             where: {id: id}
         }).then(count => {

@@ -48,7 +48,7 @@ module.exports = {
             if(user.length > 0){
                 if(user[0].status == 0){
                     const data = {message: 'Tài khoản chưa được kích hoạt', user: null}
-                    res.status(400).send(data)
+                    res.status(204).send(data)
                 }else{
                     //const data = {message: 'Succsessfull', user: user[0]}
                     res.status(200).send(user[0])
@@ -58,10 +58,10 @@ module.exports = {
                 .then(data => {
                     if(data.length > 0){
                         const data = {message: 'Mật khẩu không chính xác', user: null}
-                        res.status(400).send(data)
+                        res.status(204).send(data)
                     }else{
                         const data = {message: 'Tài khoản không tồn tại', user: null}
-                        res.status(400).send(data)
+                        res.status(204).send(data)
                     }
                 })
             }
@@ -153,6 +153,9 @@ module.exports = {
     list(req, res) {
         User.findAll()
         .then(users => {
+            users.forEach(u => {
+                u.password = '********'
+            });
             res.statusMessage = 'Successfull'
             res.status(200).send(users);
         })

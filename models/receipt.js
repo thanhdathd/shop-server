@@ -27,6 +27,7 @@ module.exports = (sequelize, DataTypes) => {
     additionalFee: DataTypes.DOUBLE,
     discount: DataTypes.DOUBLE,
     totalAmount: DataTypes.DOUBLE,
+    total: DataTypes.INTEGER,
     cash: DataTypes.DOUBLE,
     change: DataTypes.DOUBLE
   }, {
