@@ -45,7 +45,7 @@ module.exports = {
         })
         .then(rec => {
             res.status(200).send({
-                message: 'Successfully create Order',
+                message: 'Successfully create Receipt',
                 receipt: rec
             })
         })

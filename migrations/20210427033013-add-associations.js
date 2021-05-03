@@ -16,22 +16,22 @@ module.exports = {
         onDelete: 'SET NULL',
       }
     )
-    .then(() => {
-      // Receipt belong to order
-      return queryInterface.addColumn(
-        'Receipts', // source
-        'orderId', // foreign key
-        {
-          type: Sequelize.INTEGER,
-          references: {
-            model: 'Orders', // target
-            key: 'id',
-          },
-          onUpdate: 'CASCADE',
-          onDelete: 'SET NULL',
-        }
-      );
-    })
+    // .then(() => {
+    //   // Receipt belong to many order
+    //   return queryInterface.addColumn(
+    //     'Receipts', // source
+    //     'orderId', // foreign key
+    //     {
+    //       type: Sequelize.INTEGER,
+    //       references: {
+    //         model: 'Orders', // target
+    //         key: 'id',
+    //       },
+    //       onUpdate: 'CASCADE',
+    //       onDelete: 'SET NULL',
+    //     }
+    //   );
+    // })
     .then(() => {
       // materials belongto materialcats
       return queryInterface.addColumn(
@@ -71,12 +71,12 @@ module.exports = {
       'Products', // source model
       'categoryId' // key need to remove
     )
-    .then( () => {
-      return queryInterface.removeColumn(
-        'Receipts', //source
-        'orderId', // foreign key
-      )
-    })
+    // .then( () => {
+    //   return queryInterface.removeColumn(
+    //     'Receipts', //source
+    //     'orderId', // foreign key
+    //   )
+    // })
     .then( () => {
       return queryInterface.removeColumn(
         'Materials', //source
