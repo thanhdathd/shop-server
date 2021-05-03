@@ -5,6 +5,7 @@ var logger = require('morgan');
 //var cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser'); // deprecated
 const fileUpload = require('express-fileupload');
+const cors = require('cors');
 global.__basedir = __dirname;
 
 
@@ -21,6 +22,7 @@ app.use(logger('dev'));
 // app.use(bodyParser.urlencoded({extended: false}));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
+app.use(cors());
 
 // app.use(cookieParser());
 // app.use(express.static(path.join(__dirname, 'public')));

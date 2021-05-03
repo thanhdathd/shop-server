@@ -29,6 +29,8 @@ module.exports = (app) => {
   app.post('/api/upload/:category', usersController.upload);
   app.get('/api/images/:category/:file', usersController.showImage);
   app.post('/api/users/update', usersController.updateInfo);
+  app.get('/api/users/list', usersController.list);
+
   // Product
   app.post('/api/product/create', productController.create);
   app.get('/api/product/list', productController.list);

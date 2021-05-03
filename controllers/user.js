@@ -40,21 +40,30 @@ module.exports = {
         console.log('password:'+password);
         var condition = {email: email, password: password};
 
+
         User.findAll({
             attributes: ['id', 'email', 'name', 'avatar', 'phone', 'role', 'status'],
             where: condition
         }).then(user => {
             if(user.length > 0){
                 if(user[0].status == 0){
-                    const data = {message: 'Failed: Tai khoan chua duoc kich hoat', user: null}
+                    const data = {message: 'Tài khoản chưa được kích hoạt', user: null}
                     res.status(400).send(data)
                 }else{
                     //const data = {message: 'Succsessfull', user: user[0]}
                     res.status(200).send(user[0])
                 }
             }else{
-                const data = {message: 'Failed: email or password incorrect', user: null}
-                res.status(400).send(data)
+                User.findAll({where: {email: email}})
+                .then(data => {
+                    if(data.length > 0){
+                        const data = {message: 'Mật khẩu không chính xác', user: null}
+                        res.status(400).send(data)
+                    }else{
+                        const data = {message: 'Tài khoản không tồn tại', user: null}
+                        res.status(400).send(data)
+                    }
+                })
             }
         }).catch(err => {
             res.status(400).send(err)
@@ -139,5 +148,17 @@ module.exports = {
             })
             .catch(err => res.status(400).send(err))
         }
-    }
+    }, 
+
+    list(req, res) {
+        User.findAll()
+        .then(users => {
+            res.statusMessage = 'Successfull'
+            res.status(200).send(users);
+        })
+        .catch(err => {
+            res.statusMessage = 'Error'
+            res.status(400).send(err);
+        })
+    }, 
 }
