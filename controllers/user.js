@@ -40,14 +40,14 @@ module.exports = {
         console.log('password:'+password);
         var condition = {email: email, password: password};
 
-
         User.findAll({
             attributes: ['id', 'email', 'name', 'avatar', 'phone', 'role', 'status'],
             where: condition
         }).then(user => {
             if(user.length > 0){
                 if(user[0].status == 0){
-                    const data = {message: 'Tài khoản chưa được kích hoạt', user: null}
+                    const data = {message: 'Tài khoản chưa được kích hoạt', user: null};
+                    res.statusMessage = 'Account is deactivated';
                     res.status(204).send(data)
                 }else{
                     //const data = {message: 'Succsessfull', user: user[0]}
@@ -57,10 +57,12 @@ module.exports = {
                 User.findAll({where: {email: email}})
                 .then(data => {
                     if(data.length > 0){
-                        const data = {message: 'Mật khẩu không chính xác', user: null}
+                        const data = {message: 'Mật khẩu không chính xác', user: null};
+                        res.statusMessage = 'Mat khau khong chinh xac';
                         res.status(204).send(data)
                     }else{
-                        const data = {message: 'Tài khoản không tồn tại', user: null}
+                        const data = {message: 'Tài khoản không tồn tại', user: null};
+                        res.statusMessage ='Tai khoan khog ton tai';
                         res.status(204).send(data)
                     }
                 })
