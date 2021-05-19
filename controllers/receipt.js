@@ -1,11 +1,26 @@
 const Receipt = require('../models').Receipt;
 const Order = require('../models').Order;
 const ReceiptOrder = require('../models').ReceiptOrder;
+const ReceiptName = require('../models').ReceiptName;
 const Sequelize = require('sequelize');
 const Op = Sequelize.Op;
 const fs = require('fs');
 const Utils = require('./Utils.js');
 const { INTEGER } = require('sequelize');
+const db_config = require('../config/config.json');
+const db = new Sequelize(
+    db_config.development.database,
+    db_config.development.username,
+    db_config.development.password, {
+        host: db_config.development.host,
+        dialect: db_config.development.dialect,
+        pool: {
+        max: 5,
+        min: 0,
+        acquire: 30000,
+        idle: 10000
+        },
+    });
 
 
 
@@ -98,8 +113,33 @@ module.exports = {
     list(req, res) {
         const { page, size } = req.query;
         const { limit, offset } = getPagination(page, size);
+
+        const query = `SELECT r.id, r.staffName, r.staffPhone, r.listProduct, r.additionalFee, r.discount, r.totalAmount, r.total, r.cash, r.change, r.createdAt, r.updatedAt, rn.od_name as name FROM receipts as r`
+        +` INNER JOIN receipt_name as rn on r.id = rn.id LIMIT ${limit} OFFSET ${offset}`
+
+        return db.query(query, { type: Sequelize.QueryTypes.SELECT})
+        .then(data => {
+            if(data){
+                Receipt.count({
+                    distinct: true,
+                    col: 'id'
+                }).then(count => {
+                    const response = getPagingData({count, rows: data}, page, limit);
+                    res.status(200).send(response);
+                })
+            }else{
+                res.status(400).send({error: 'djhgjkdshg'});
+            }
+        })
+        .catch(error =>  res.status(400).send(error));
+
         return Receipt
-            .findAndCountAll({limit, offset})
+            .findAndCountAll({limit, offset, 
+                include: [{
+                    model: ReceiptName,
+                    required: true
+                  }] 
+            })
             .then(data => {
                 const response = getPagingData(data, page, limit)
                 res.status(200).send(response);

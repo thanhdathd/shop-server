@@ -18,6 +18,7 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: 'receiptId',
         otherKey: 'orderId'
       });
+      Receipt.hasMany(models.ReceiptName, {foreignKey: 'id'});
     }
   };
   Receipt.init({
