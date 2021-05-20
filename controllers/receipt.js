@@ -132,19 +132,6 @@ module.exports = {
             }
         })
         .catch(error =>  res.status(400).send(error));
-
-        return Receipt
-            .findAndCountAll({limit, offset, 
-                include: [{
-                    model: ReceiptName,
-                    required: true
-                  }] 
-            })
-            .then(data => {
-                const response = getPagingData(data, page, limit)
-                res.status(200).send(response);
-            })
-            .catch(error => res.status(400).send(error));
     },
 
 
@@ -200,5 +187,27 @@ module.exports = {
             message: 'Failed',
             err: err,
         }))
+    },
+
+    detail(req, res) {
+        const id = req.params.id;
+        if (typeof(id) != 'undefined'){
+            const query = `SELECT r.id, r.staffName, r.staffPhone, r.listProduct, r.additionalFee, r.discount, r.totalAmount, r.total, r.cash, r.change, r.createdAt, r.updatedAt, rn.od_name as name FROM receipts as r`
+        +` INNER JOIN receipt_name as rn on r.id = rn.id where r.id = ${id}`
+            return db.query(query, { type: Sequelize.QueryTypes.SELECT})
+            .then(data => {
+                data.forEach(d => {
+                    d.listProduct = JSON.parse(d.listProduct)
+                })
+                if(data){
+                    res.status(200).send(data);
+                }else{
+                    res.status(400).send({error: 'djhgjkdshg'});
+                }
+            })
+            .catch(error =>  res.status(400).send(error));
+        }else{
+            res.status(400).send({error: 'missing id param'})
+        }
     }
 }

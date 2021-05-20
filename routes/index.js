@@ -65,5 +65,5 @@ module.exports = (app) => {
   app.get('/api/receipt/list', receiptController.list);
   app.post('/api/receipt/update', receiptController.update);
   app.post('/api/receipt/delete', receiptController.delete);
-
+  app.post('/api/receipt/:id', receiptController.detail);
 }
