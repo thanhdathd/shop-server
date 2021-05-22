@@ -64,17 +64,27 @@ module.exports = {
     },
 
     list(req, res) {
-        const { page, size } = req.query;
+        const { page, size, cat } = req.query;
         const { limit, offset } = getPagination(page, size);
 
         console.log("req.params: "+req.query.page)
-        return Product
+        if (typeof(cat) != 'undefined' && cat != -1) {
+            return Product
+            .findAndCountAll({where: {categoryId: cat} ,limit, offset})
+            .then(data => {
+                const response = getPagingData(data, page, limit)
+                res.status(200).send(response);
+            })
+            .catch(error => res.status(400).send(error));
+        } else {
+            return Product
             .findAndCountAll({limit, offset})
             .then(data => {
                 const response = getPagingData(data, page, limit)
                 res.status(200).send(response);
             })
             .catch(error => res.status(400).send(error));
+        }
     },
 
     update(req, res) {
