@@ -117,4 +117,17 @@ module.exports = {
             err: err,
         }))
     },
+
+    detail(req, res){
+        const id = req.params.id;
+        Product.findByPk(id)
+            .then( pro => {
+                pro.options = JSON.parse(pro.options);
+                res.status(200).send(pro);
+            })
+            .catch(err => res.status(400).send({
+                message: 'Failed',
+                err: err,
+            }))
+    }
 };

@@ -36,6 +36,7 @@ module.exports = (app) => {
   app.get('/api/product/list', productController.list);
   app.post('/api/product/update', productController.update);
   app.post('/api/product/delete', productController.delete);
+  app.post('/api/product/:id', productController.detail);
 
   // Product category
   app.post('/api/category/create', categoryController.create);
