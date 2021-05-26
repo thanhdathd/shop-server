@@ -114,6 +114,11 @@ module.exports = {
         const { page, size } = req.query;
         const { limit, offset } = getPagination(page, size);
 
+        // hom nay ... WHERE CURDATE() = DATE(createdAt)
+        // hom qua ... WHERE DATE(createdAt) = SUBDATE(CURDATE(),1)
+        // 
+
+
         const query = `SELECT r.id, r.staffName, r.staffPhone, r.listProduct, r.additionalFee, r.discount, r.totalAmount, r.total, r.cash, r.change, r.createdAt, r.updatedAt, rn.od_name as name FROM receipts as r`
         +` INNER JOIN receipt_name as rn on r.id = rn.id LIMIT ${limit} OFFSET ${offset}`
 
