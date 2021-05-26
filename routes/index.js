@@ -60,6 +60,7 @@ module.exports = (app) => {
   app.get('/api/order/list', orderController.list);
   app.post('/api/order/update', orderController.update);
   app.post('/api/order/delete', orderController.delete);
+  app.post('/api/order/:id', orderController.detail);
 
   // Receipt receiptController
   app.post('/api/receipt/create', receiptController.create);

@@ -55,15 +55,27 @@ module.exports = {
     },
 
     list(req, res) {
-        const { page, size } = req.query;
+        const { page, size, filter, order } = req.query;
         const { limit, offset } = getPagination(page, size);
-        return Order
-            .findAndCountAll({limit, offset})
+        let orderBy = 'DESC'
+        if(typeof(order) !== 'undefined') orderBy = order
+        if(typeof(filter) == 'undefined' || filter == 'all'){
+            return Order
+            .findAndCountAll({order: [['id', orderBy]], limit, offset})
             .then(data => {
                 const response = getPagingData(data, page, limit)
                 res.status(200).send(response);
             })
             .catch(error => res.status(400).send(error));
+        }else{
+            return Order
+            .findAndCountAll({where: {status: filter}, order: [['id', orderBy]], limit, offset})
+            .then(data => {
+                const response = getPagingData(data, page, limit)
+                res.status(200).send(response);
+            })
+            .catch(error => res.status(400).send(error));
+        }
     },
 
 
@@ -106,5 +118,18 @@ module.exports = {
             message: 'Failed',
             err: err,
         }))
+    },
+
+    detail(req, res){
+        const id = req.params.id;
+        Order.findByPk(id)
+            .then( p => {
+                p.listProduct = JSON.parse(p.listProduct);
+                res.status(200).send(p);
+            })
+            .catch(err => res.status(400).send({
+                message: 'Failed',
+                err: err,
+            }))
     }
 }
