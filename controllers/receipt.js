@@ -111,16 +111,29 @@ module.exports = {
     },
 
     list(req, res) {
-        const { page, size } = req.query;
+        const { page, size, filter, order } = req.query;
         const { limit, offset } = getPagination(page, size);
-
-        // hom nay ... WHERE CURDATE() = DATE(createdAt)
-        // hom qua ... WHERE DATE(createdAt) = SUBDATE(CURDATE(),1)
-        // 
-
-
+        let _filter = 'all_time'
+        let _orderBy = 'ASC'
+        if(typeof(order) !== 'undefined') _orderBy = order
+        if(typeof(filter) !== 'undefined') _filter = filter
+        let hom_nay = 'WHERE CURDATE() = DATE(r.createdAt)'
+        let hom_qua = 'WHERE DATE(r.createdAt) = SUBDATE(CURDATE(),1)'
+        let tuan_nay = 'WHERE YEARWEEK(r.createdAt, 1) = YEARWEEK(CURDATE(), 1)'
+        let tuan_truoc = 'WHERE YEARWEEK(r.createdAt, 1) = YEARWEEK(CURDATE(), 1)-1'
+        let thang_nay = 'WHERE MONTH(r.createdAt) = MONTH(CURRENT_DATE) AND YEAR(r.createdAt) = YEAR(CURRENT_DATE)'
+        let thang_truoc = 'WHERE YEAR(r.createdAt) = YEAR(CURRENT_DATE - INTERVAL 1 MONTH) AND MONTH(r.createdAt) = MONTH(CURRENT_DATE - INTERVAL 1 MONTH)'
+        let _where = ''
+        switch(filter){
+            case 'today': _where = hom_nay;break;
+            case 'yesterday': _where = hom_qua;break;
+            case 'this_week': _where = tuan_nay;break;
+            case 'last_week': _where = tuan_truoc;break;
+            case 'this_month': _where = thang_nay;break;
+            case 'last_month': _where = thang_truoc;break;
+        }
         const query = `SELECT r.id, r.staffName, r.staffPhone, r.listProduct, r.additionalFee, r.discount, r.totalAmount, r.total, r.cash, r.change, r.createdAt, r.updatedAt, rn.od_name as name FROM receipts as r`
-        +` INNER JOIN receipt_name as rn on r.id = rn.id LIMIT ${limit} OFFSET ${offset}`
+        +` INNER JOIN receipt_name as rn on r.id = rn.id ${_where} ORDER BY r.createdAt ${_orderBy} LIMIT ${limit} OFFSET ${offset}`
 
         return db.query(query, { type: Sequelize.QueryTypes.SELECT})
         .then(data => {
